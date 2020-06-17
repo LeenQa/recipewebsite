@@ -24,9 +24,9 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     DIFFICULTY = (
-        ('E', 'Easy'),
-        ('M', 'Medium'),
-        ('H', 'Hard'),
+        ('Easy', 'Easy'),
+        ('Medium', 'Medium'),
+        ('Hard', 'Hard'),
     )
     name = models.CharField(max_length=250)
     duration = models.CharField(max_length=250)

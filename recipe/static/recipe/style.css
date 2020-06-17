@@ -11,3 +11,9 @@ ul {
     border: none;
     border-radius: 0;
 }
+
+.thumbnail>img {
+    display: block;
+    max-width: 350px;
+    max-height: 350px;
+}

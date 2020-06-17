@@ -1,14 +1,39 @@
-<!-- FORM FOR ADDING RECIPES -->
 {% extends 'recipe/base_template.html' %}
+
 {% block body %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% include 'recipe/form-template.html' %}
-                </form>
-            </div>
-        </div>
+<form class="form" action="" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="name">Recipe's name</label>
+      <input type="text" class="form-control"  name="name" placeholder="enter the recipe's name">
     </div>
+    <div class="form-group col-md-6">
+      <label for="duration">Duration</label>
+      <input type="text" class="form-control" name="duration" placeholder="enter the time it takes to make this recipe">
+    </div>
+   <div class="form-group col-md-6">
+    <label for="recipe_image">Upload an image for the recipe</label>
+    <input type="file" class="form-control-file" name="recipe_image">
+  </div>
+    <div class="form-group col-md-6">
+      <label for="difficulty">Difficulty</label>
+      <select class="form-control" name="difficulty">
+        <option value="Easy" selected>Easy</option>
+        <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+      </select>
+    </div>
+         <div class="form-group col-md-12">
+             <label>Ingredient</label>
+     <select name="ingredients" required="" id="id_ingredients" multiple="">
+         {% for ingredient in ingredient_list %}
+        <option value="{{ingredient.pk}}" >{{ ingredient.name }}</option>
+         {% endfor %}
+    </select>
+
+     </div>
+  <button type="submit" class="btn btn-success">Add Recipe</button>
+   </div>
+</form>
 {% endblock %}
