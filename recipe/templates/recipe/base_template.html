@@ -11,26 +11,30 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+<!-- NAVIGATION BAR-->
 <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="{% url 'recipe:index' %}">ReciPie</a>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'recipe:index' %}">ReciPie</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'recipe:index' %}"><span class="glyphicon glyphicon-cutlery"></span> Recipes</a>
+                </li>
+                <li><a href="{% url 'recipe:recipe-add' %}"><span class="glyphicon glyphicon-plus"></span> Add
+                    Recipe</a></li>
+                <li><a href="{% url 'recipe:ingredient-add' %}"><span class="glyphicon glyphicon-plus"></span> Add
+                    Ingredient</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav navbar-right">
-           <li><a href="{% url 'recipe:index' %}"><span class="glyphicon glyphicon-cutlery"></span> Recipies</a></li>
-        <li><a href="{% url 'recipe:details' 1 %}"><span class="glyphicon glyphicon-plus"></span> Add Recipe</a></li>
-      </ul>
-    </div>
-  </div>
 </nav>
-
-{% block body  %}
+{% block body %}
 {% endblock %}
 </body>
 </html>

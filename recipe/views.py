@@ -16,3 +16,12 @@ class DetailView(generic.DetailView):
     model = Recipe
     template_name = 'recipe/details.html'
 
+
+class RecipeCreate(CreateView):
+    model = Recipe
+    fields = ['name', 'duration', 'ingredients', 'recipe_image', 'difficulty']
+
+
+class IngredientCreate(CreateView):
+    model = Ingredient
+    fields = ['name', 'ingredient_type', 'is_organic']

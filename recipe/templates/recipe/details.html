@@ -1,36 +1,49 @@
 {% extends 'recipe/base_template.html' %}
 {% block body %}
-<img src="{{ recipe.recipe_image.url }}" alt="recipe image" style="max-width:300px">
-<h1> {{ recipe.name }}</h1>
-<h3>Duration: {{ recipe.duration}}</h3>
-<h3>Difficulty: {{ recipe.difficulty}}</h3>
-<div class="container">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Ingredient</th>
-        <th>Type</th>
-        <th>Organic</th>
-      </tr>
-    </thead>
-    <tbody>
-{% for ingredient in recipe.ingredients.all %}
-     <tr>
-        <td>{{ ingredient.name }}</td>
-        <td>{{ ingredient.ingredient_type }}</td>
-        <td>
-            {% if ingredient.is_organic %}
-                yes
-            {% else %}
-                no
-            {% endif %}
-        </td>
-      </tr>
-{% endfor %}
-    </tbody>
-  </table>
-</div>
-{% if error_message %}
-    <p><strong>{{ error_message }}</strong></p>
-{% endif %}
+    <!-- RECIPES LISTING -->
+    <div id="portfolio" class="container-fluid text-center bg-grey">
+        <h2>{{ recipe.name }}</h2><br>
+        <div class="row text-center slideanim">
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                    <img src="{{ recipe.recipe_image.url }}" alt="{{ recipe.name }}" width="400" height="300"><br>
+                    <p>Difficulty: {{ recipe.difficulty }}</p>
+                    <p>Duration: {{ recipe.duration }}</p>
+                </div>
+            </div>
+            <div class="row text-center slideanim">
+                <div class="col-sm-1">
+                    <div class="container">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>Type</th>
+                                <th>Organic</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for ingredient in recipe.ingredients.all %}
+                                <tr>
+                                    <td>{{ ingredient.name }}</td>
+                                    <td>{{ ingredient.ingredient_type }}</td>
+                                    <td>
+                                        {% if ingredient.is_organic %}
+                                            yes
+                                        {% else %}
+                                            no
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if error_message %}
+        <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
 {% endblock %}

@@ -1,0 +1,14 @@
+<!-- FORM FOR ADDING RECIPES -->
+{% extends 'recipe/base_template.html' %}
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% include 'recipe/form-template.html' %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
