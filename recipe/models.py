@@ -1,16 +1,23 @@
 from django.db import models
 from django.urls import reverse
 
+TYPE = (
+    ('Vegetables', 'veg'),
+    ('Fruits', 'fruit'),
+    ('Grains, Beans and Nuts', 'grain'),
+    ('Meat and Poultry', 'meat'),
+    ('Fish and Seafood', 'seafood'),
+    ('Dairy Foods', 'dairy'),
+)
+
+DIFFICULTY = (
+    ('Easy', 'Easy'),
+    ('Medium', 'Medium'),
+    ('Hard', 'Hard'),
+)
+
 
 class Ingredient(models.Model):
-    TYPE = (
-        ('Vegetables', 'veg'),
-        ('Fruits', 'fruit'),
-        ('Grains, Beans and Nuts', 'grain'),
-        ('Meat and Poultry', 'meat'),
-        ('Fish and Seafood', 'seafood'),
-        ('Dairy Foods', 'dairy'),
-    )
     name = models.CharField(max_length=250)
     ingredient_type = models.CharField(max_length=50, choices=TYPE)
     is_organic = models.BooleanField(default=True)
@@ -23,11 +30,6 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    DIFFICULTY = (
-        ('Easy', 'Easy'),
-        ('Medium', 'Medium'),
-        ('Hard', 'Hard'),
-    )
     name = models.CharField(max_length=250)
     duration = models.CharField(max_length=250)
     ingredients = models.ManyToManyField(Ingredient)
