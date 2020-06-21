@@ -1,13 +1,15 @@
+from rest_framework import status
 from rest_framework.views import APIView
-
-from recipe.models import Recipe, Ingredient
 from django.views import generic
 from django.views.generic.edit import CreateView
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from .serializers import IngredientSerializer
+from .serializers import *
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 class IndexView(generic.ListView):
@@ -39,54 +41,63 @@ class IngredientCreate(CreateView):
     fields = ['name', 'ingredient_type', 'is_organic']
 
 
-@csrf_exempt
-def ingredient_list(request):
-    if request.method == 'GET':
-        ingredients = Ingredient.objects.all()
-        serializer = IngredientSerializer(ingredients, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = IngredientSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def ingredient_detail(request, pk):
-    try:
-        ingredient = Ingredient.objects.get(pk=pk)
-    except Ingredient.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = IngredientSerializer(ingredient)
-        return JsonResponse(serializer.data)
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = IngredientSerializer(ingredient, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-    elif request.method == 'DELETE':
-        ingredient.delete()
-        return HttpResponse(status=204)
-
-
+@permission_classes((IsAuthenticated), )
 class IngredientsView(APIView):
     def get(self, request):
-        ingredients =Ingredient.objects.all()
+        ingredients = Ingredient.objects.all()
         serializer = IngredientSerializer(ingredients, many=True)
         return Response({"ingredients": serializer.data})
 
     def post(self, request):
         ingredient = request.data.get('ingredient')
-
         serializer = IngredientSerializer(data=ingredient)
         if serializer.is_valid(raise_exception=True):
-            save_ingredient = serializer.save()
+            serializer.save()
+            return Response({"success": f"ingredient '{ingredient['name']}' created successfully"})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"success":f"ingrediet '{ ingredient.name}' created successfuly"})
+
+class IngredientDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Ingredient.objects.get(pk=pk)
+        except Ingredient.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        ingredient = self.get_object(pk)
+        serializer = IngredientSerializer(ingredient)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        ingredient = self.get_object(pk)
+        serializer = IngredientSerializer(ingredient, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        ingredient = self.get_object(pk)
+        ingredient.delete()
+        return Response({"success": f"ingredient Deleted successfully"})
+
+
+class RegisterView(APIView):
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        # if User.objects.filter(username=request.data['username']).exists():
+        #    raise serializers.ValidationError({"username": "username already exists."})
+        if serializer.is_valid():
+            user = serializer.save()
+            data = {}
+            data['response'] = f"User {user.username} created successfully"
+            data['username'] = user.username
+            data['email'] = user.email
+            token = Token.objects.get(user=user).key
+            data['token'] = token
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
