@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 
 TYPE = (
     ('Vegetables', 'veg'),
@@ -25,6 +26,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=250)
     ingredient_type = models.CharField(max_length=50, choices=TYPE)
     is_organic = models.BooleanField(default=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.name}"
@@ -39,6 +41,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(Ingredient)
     recipe_image = models.FileField()
     difficulty = models.CharField(max_length=50, choices=DIFFICULTY)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"recipe name: {self.name}, duration: {self.duration}"
