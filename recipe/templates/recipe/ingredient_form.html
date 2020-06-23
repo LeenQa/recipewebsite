@@ -1,0 +1,35 @@
+{% extends 'recipe/base_template.html' %}
+{% block body %}
+
+<form class="form" action="" method="post">
+{% csrf_token %}
+ <div class="form-row">
+  <div class="form-group  col-sm-12">
+    <label for="name">Ingredient name</label>
+    <input type="text" class="form-control" placeholder="enter the ingredient's name" name="name">
+  </div>
+  <div class="form-group col-sm-12">
+      <label for="type">Ingredient Type</label>
+      <select class="form-control" name="ingredient_type">
+        <option value="Vegetables" selected="">Vegetables</option>
+        <option value="Fruits">Fruits</option>
+        <option value="Grains, Beans and Nuts">Grains, Beans and Nuts</option>
+        <option value="Meat and Poultry">Meat and Poultry</option>
+        <option value="Fish and Seafood">Fish and Seafood</option>
+        <option value="Dairy Foods">Dairy Foods</option>
+
+      </select>
+    </div>
+     <div class="form-group  col-sm-5">
+     <label for="organic">Is this ingredient organic?</label>
+    <div class="form-check form-check-inline" name="is_organic">
+  <input class="form-check-input" type="checkbox" name="is_organic" id="is_organic" value="is_organic">
+  <label class="form-check-label" for="inlineRadio1">is organic</label>
+</div>
+</div>
+     <div class="form-group col-sm-12">
+   <button type="submit" class="btn btn-success">Add Ingredient</button>
+         </div>
+</div>
+</form>
+{% endblock %}
