@@ -1,13 +1,21 @@
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from .models import Recipe, Ingredient
+import re
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+
+    def validate_name(self, value):
+        r = re.compile('^[a-zA-Z ]*$')
+        if not (r.match(value) is not None):
+            raise serializers.ValidationError("ingredient name can only contain alphabets")
+        return value
 
     class Meta:
         model = Ingredient
@@ -21,16 +29,34 @@ class RecipeSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+    name = serializers.CharField(
+        max_length=250,
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Z ]*$',
+                message='recipe name can only contain alphabets',
+                code='invalid_username'
+            ),
+        ]
+    )
+    duration = serializers.CharField(
+        max_length=250,
+        validators=[
+            RegexValidator(
+                regex='\\b(minute|hour|day)',
+                message='You must specify duration in minutes/hours/days',
+                code='invalid_duration'
+            ),
+        ]
+    )
+
     ingredients = IngredientSerializer(many=True, read_only=True)
     ingredient_list = serializers.ListField(write_only=True)
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredient_list')
-        # list = []
-        # for ingredient in ingredients:
-        #     list.append(Ingredient.objects.get(pk=ingredient))
-        validated_data['ingredients'].add(ingredients)
         recipe = super(RecipeSerializer, self).create(validated_data)
+        recipe.ingredients.set(ingredients)
         return recipe
 
     class Meta:

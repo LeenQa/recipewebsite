@@ -5,6 +5,7 @@ from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from .permissions import IsLoggedUser
+import django_filters.rest_framework
 
 
 class IndexView(generic.ListView):  # a view for the index page
@@ -35,8 +36,12 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated, IsLoggedUser )
+    permission_classes = (IsAuthenticated, IsLoggedUser)
     pagination_class = PageNumberPagination
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = ['name',
+                        'ingredient_type',
+                        'is_organic']
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -45,5 +50,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated, IsLoggedUser)
     pagination_class = PageNumberPagination
-
-
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = ['name',
+                        'duration',
+                        'ingredients',
+                        'recipe_image',
+                        'difficulty',
+                        'ingredient_list']
