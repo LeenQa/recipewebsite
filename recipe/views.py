@@ -1,6 +1,7 @@
 from rest_framework import generics, viewsets
 from rest_framework.authentication import TokenAuthentication
 from django.views import generic
+from rest_framework.renderers import TemplateHTMLRenderer
 from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -57,3 +58,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                         'recipe_image',
                         'difficulty',
                         'ingredient_list']
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return Response({'recipe': self.object}, template_name='index.html')
